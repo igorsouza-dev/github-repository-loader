@@ -6,7 +6,7 @@ import api from '../../services/api';
 
 import Container from '../../components/Container';
 
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, ErrorText } from './styles';
 
 class Main extends Component {
   constructor() {
@@ -16,6 +16,8 @@ class Main extends Component {
       newRepo: '',
       repositories: [],
       loading: false,
+      error: false,
+      errorMessage: null,
     };
   }
 
@@ -39,39 +41,62 @@ class Main extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    this.setState({ loading: true });
+    this.setState({ loading: true, error: false, errorMessage: null });
     const { newRepo, repositories } = this.state;
     try {
+      if (newRepo === '') throw 'You need to inform a repository';
+
+      const hasRepo = repositories.find(r => r.name === newRepo);
+
+      if (hasRepo) throw 'Repository was already added';
+
       const response = await api.get(`/repos/${newRepo}`);
       const data = {
         name: response.data.full_name,
       };
+
       this.setState({
         repositories: [...repositories, data],
         newRepo: '',
         loading: false,
       });
     } catch (error) {
-      alert('Repository doesnt exists');
-      this.setState({ loading: false });
+      let errorMessage = error;
+      if (error.response) {
+        if (error.response.status === 404) {
+          errorMessage = 'Repository does not exists';
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      this.setState({
+        loading: false,
+        error: true,
+        errorMessage,
+      });
     }
   };
 
   render() {
-    const { newRepo, repositories, loading } = this.state;
+    const { newRepo, repositories, loading, error, errorMessage } = this.state;
     return (
       <Container>
         <h1>
           <FaGithubAlt />
           Repositories
         </h1>
-        <Form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            placeholder="Add repository"
-            value={newRepo}
-            onChange={this.handleInputChange}
-          />
+        <Form onSubmit={this.handleSubmit} error={error}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <input
+              type="text"
+              placeholder="Add repository"
+              value={newRepo}
+              onChange={this.handleInputChange}
+            />
+            {error && <ErrorText error={error}>{errorMessage}</ErrorText>}
+          </div>
+
           <SubmitButton loading={loading}>
             {loading ? (
               <FaSpinner color="#fff" size={14} />
