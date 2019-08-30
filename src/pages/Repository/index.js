@@ -13,6 +13,7 @@ import {
   PaginatorButton,
   IssueFilter,
   IssueButton,
+  IssueLabel,
 } from './styles';
 import Container from '../../components/Container';
 
@@ -117,7 +118,9 @@ export default class Repository extends Component {
                     <strong>
                       <a href={issue.html_url}>{issue.title}</a>
                       {issue.labels.map(label => (
-                        <span key={label.id}>{label.name}</span>
+                        <IssueLabel key={label.id} color={label.color}>
+                          {label.name}
+                        </IssueLabel>
                       ))}
                     </strong>
                     <p>{issue.user.login}</p>

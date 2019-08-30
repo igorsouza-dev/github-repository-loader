@@ -80,17 +80,6 @@ export const IssueList = styled.ul`
           color: #7159c1;
         }
       }
-
-      span {
-        background: #eee;
-        color: #333;
-        border-radius: 2px;
-        font-size: 12px;
-        font-weight: 600;
-        height: 20px;
-        padding: 3px 4px;
-        margin-left: 10px;
-      }
     }
     p {
       margin-top: 5px;
@@ -98,6 +87,16 @@ export const IssueList = styled.ul`
       color: #999;
     }
   }
+`;
+export const IssueLabel = styled.span`
+  background: #${props => props.color};
+  color: #333;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  height: 20px;
+  padding: 6px 8px;
+  margin-left: 10px;
 `;
 export const Paginator = styled.div`
   display: flex;
