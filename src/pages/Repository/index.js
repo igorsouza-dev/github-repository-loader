@@ -95,45 +95,50 @@ export default class Repository extends Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
-        <IssueFilter>
-          {filters.map(filter => (
-            <IssueButton
-              key={filter.value}
-              type="button"
-              onClick={() => this.handleFilterState(filter.value)}
-              active={filterState === filter.value}
-            >
-              {filter.label}
-            </IssueButton>
-          ))}
-        </IssueFilter>
-        <IssueList>
-          {issues.map(issue => (
-            <li key={String(issue.id)}>
-              <img src={issue.user.avatar_url} alt={issue.user.login} />
-              <div>
-                <strong>
-                  <a href={issue.html_url}>{issue.title}</a>
-                  {issue.labels.map(label => (
-                    <span key={label.id}>{label.name}</span>
-                  ))}
-                </strong>
-                <p>{issue.user.login}</p>
-              </div>
-            </li>
-          ))}
-        </IssueList>
-        <Paginator>
-          <PaginatorButton
-            disabled={page < 2}
-            onClick={() => this.handleClick('back')}
-          >
-            <FaArrowLeft />
-          </PaginatorButton>
-          <PaginatorButton onClick={() => this.handleClick('next')}>
-            <FaArrowRight />
-          </PaginatorButton>
-        </Paginator>
+        {issues.length > 0 && (
+          <>
+            <IssueFilter>
+              {filters.map(filter => (
+                <IssueButton
+                  key={filter.value}
+                  type="button"
+                  onClick={() => this.handleFilterState(filter.value)}
+                  active={filterState === filter.value}
+                >
+                  {filter.label}
+                </IssueButton>
+              ))}
+            </IssueFilter>
+            <IssueList>
+              {issues.map(issue => (
+                <li key={String(issue.id)}>
+                  <img src={issue.user.avatar_url} alt={issue.user.login} />
+                  <div>
+                    <strong>
+                      <a href={issue.html_url}>{issue.title}</a>
+                      {issue.labels.map(label => (
+                        <span key={label.id}>{label.name}</span>
+                      ))}
+                    </strong>
+                    <p>{issue.user.login}</p>
+                  </div>
+                </li>
+              ))}
+            </IssueList>
+            <Paginator>
+              <PaginatorButton
+                disabled={page < 2}
+                onClick={() => this.handleClick('back')}
+              >
+                <FaArrowLeft />
+              </PaginatorButton>
+              <PaginatorButton onClick={() => this.handleClick('next')}>
+                <FaArrowRight />
+              </PaginatorButton>
+            </Paginator>
+          </>
+        )}
+        {issues.length === 0 && <p>No issues found.</p>}
       </Container>
     );
   }
