@@ -99,3 +99,34 @@ export const IssueList = styled.ul`
     }
   }
 `;
+export const Paginator = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 15px;
+
+  svg {
+    color: #fff;
+    cursor: pointer;
+  }
+`;
+
+export const PaginatorButton = styled.button.attrs(props => ({
+  disabled: props.loading || props.disabled,
+}))`
+  background: #7159c1;
+  border: 0;
+  padding: 0 5px;
+  margin-left: 10px;
+  border-radius: 4px;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+`;

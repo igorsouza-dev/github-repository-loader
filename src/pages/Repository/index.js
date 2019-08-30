@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 import PropTypes from 'prop-types';
 import api from '../../services/api';
 
-import { Loading, Owner, IssueList } from './styles';
+import {
+  Loading,
+  Owner,
+  IssueList,
+  Paginator,
+  PaginatorButton,
+} from './styles';
 import Container from '../../components/Container';
 
 export default class Repository extends Component {
@@ -22,19 +29,35 @@ export default class Repository extends Component {
       repository: {},
       issues: [],
       loading: true,
+      filterState: 'all',
+      page: 1,
     };
   }
 
   async componentDidMount() {
+    this.fetchData();
+  }
+
+  handleClick = async action => {
+    const { page } = this.state;
+    await this.setState({
+      page: action === 'back' ? page - 1 : page + 1,
+    });
+    this.fetchData();
+  };
+
+  async fetchData() {
     const { match } = this.props;
+    const { filterState, page } = this.state;
     const repoName = decodeURIComponent(match.params.repository);
 
     const [repository, issues] = await Promise.all([
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
-          state: 'open',
+          state: filterState,
           per_page: 5,
+          page,
         },
       }),
     ]);
@@ -47,7 +70,7 @@ export default class Repository extends Component {
   }
 
   render() {
-    const { repository, issues, loading } = this.state;
+    const { repository, issues, loading, page } = this.state;
 
     if (loading) {
       return <Loading>Carregando</Loading>;
@@ -77,6 +100,17 @@ export default class Repository extends Component {
             </li>
           ))}
         </IssueList>
+        <Paginator>
+          <PaginatorButton
+            disabled={page < 2}
+            onClick={() => this.handleClick('back')}
+          >
+            <FaArrowLeft />
+          </PaginatorButton>
+          <PaginatorButton onClick={() => this.handleClick('next')}>
+            <FaArrowRight />
+          </PaginatorButton>
+        </Paginator>
       </Container>
     );
   }
