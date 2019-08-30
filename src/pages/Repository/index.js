@@ -11,6 +11,8 @@ import {
   IssueList,
   Paginator,
   PaginatorButton,
+  IssueFilter,
+  IssueButton,
 } from './styles';
 import Container from '../../components/Container';
 
@@ -62,20 +64,29 @@ export default class Repository extends Component {
       }),
     ]);
 
-    this.setState({
+    await this.setState({
       loading: false,
       repository: repository.data,
       issues: issues.data,
     });
   }
 
+  async handleFilterState(filterState) {
+    await this.setState({ filterState });
+    this.fetchData();
+  }
+
   render() {
-    const { repository, issues, loading, page } = this.state;
+    const { repository, issues, loading, page, filterState } = this.state;
 
     if (loading) {
       return <Loading>Carregando</Loading>;
     }
-
+    const filters = [
+      { label: 'All', value: 'all' },
+      { label: 'Open', value: 'open' },
+      { label: 'Closed', value: 'closed' },
+    ];
     return (
       <Container>
         <Owner>
@@ -84,6 +95,18 @@ export default class Repository extends Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
+        <IssueFilter>
+          {filters.map(filter => (
+            <IssueButton
+              key={filter.value}
+              type="button"
+              onClick={() => this.handleFilterState(filter.value)}
+              active={filterState === filter.value}
+            >
+              {filter.label}
+            </IssueButton>
+          ))}
+        </IssueFilter>
         <IssueList>
           {issues.map(issue => (
             <li key={String(issue.id)}>

@@ -111,6 +111,25 @@ export const Paginator = styled.div`
   }
 `;
 
+export const IssueButton = styled.button`
+  background: #ccc;
+  border: 0;
+  padding: 10px;
+  margin-left: 10px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ${props => props.active && 'background: #576574;color: white;'}
+`;
+
+export const IssueFilter = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+`;
 export const PaginatorButton = styled.button.attrs(props => ({
   disabled: props.loading || props.disabled,
 }))`
